@@ -4,24 +4,34 @@ import matplotlib.pyplot as plt
 # Load dataset
 df = pd.read_csv('Dataset.csv')
 
-# Count restaurants by price range
-price_count = df['Price range'].value_counts()
+# Remove empty cuisines
+cuisine_data = df.dropna(subset=['Cuisines'])
 
-print("Restaurant Count by Price Range")
-print(price_count)
+# Split cuisines
+cuisine_data['Cuisines'] = cuisine_data['Cuisines'].str.split(', ')
 
-# Calculate percentage
-percentage = (price_count / len(df)) * 100
+# Separate multiple cuisines into rows
+exploded = cuisine_data.explode('Cuisines')
 
-print("\nPercentage Distribution")
-print(round(percentage, 2))
+# Calculate average rating
+avg_cuisine_rating = exploded.groupby('Cuisines')['Aggregate rating'].mean()
+
+# Sort highest ratings
+top_cuisines = avg_cuisine_rating.sort_values(ascending=False).head(10)
+
+print("Top 10 Cuisines by Average Rating")
+print(round(top_cuisines, 2))
 
 # Create graph
-price_count.plot(kind='bar')
+top_cuisines.plot(kind='bar')
 
-plt.title("Price Range Distribution")
-plt.xlabel("Price Range")
-plt.ylabel("Restaurant Count")
+plt.title("Top 10 Cuisines by Average Rating")
+plt.xlabel("Cuisine")
+plt.ylabel("Average Rating")
 
-plt.savefig("price_distribution.png")
+plt.xticks(rotation=45)
+
+plt.tight_layout()
+
+plt.savefig("top_cuisine_ratings.png")
 plt.show()

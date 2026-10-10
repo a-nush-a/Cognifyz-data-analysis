@@ -4,31 +4,24 @@ import matplotlib.pyplot as plt
 # Load dataset
 df = pd.read_csv('Dataset.csv')
 
-# Count restaurants by city
-city_count = df['City'].value_counts()
+# Top voted restaurants
+top_voted = df[['Restaurant Name', 'Votes']].sort_values(by='Votes', ascending=False)
 
-print("Top Cities by Restaurant Count")
-print(city_count.head(10))
-
-# Average rating by city
-avg_rating = df.groupby('City')['Aggregate rating'].mean()
-
-print("\nTop Cities by Average Rating")
-print(avg_rating.sort_values(ascending=False).head(10))
-
-# Highest rated city
-highest_rating_city = avg_rating.idxmax()
-
-print("\nHighest Average Rating City:", highest_rating_city)
-
-print("Highest Rating:", avg_rating.max())
+print("Top 10 Restaurants by Votes")
+print(top_voted.head(10))
 
 # Create graph
-city_count.head(10).plot(kind='bar')
+top10 = top_voted.head(10)
 
-plt.title("Top 10 Cities by Restaurant Count")
-plt.xlabel("City")
-plt.ylabel("Number of Restaurants")
+plt.bar(top10['Restaurant Name'], top10['Votes'])
 
-plt.savefig("city_analysis.png")
+plt.title("Top 10 Restaurants by Votes")
+plt.xlabel("Restaurant Name")
+plt.ylabel("Votes")
+
+plt.xticks(rotation=90)
+
+plt.tight_layout()
+
+plt.savefig("top_voted_restaurants.png")
 plt.show()

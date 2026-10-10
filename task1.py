@@ -1,40 +1,25 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+
+# Load dataset
 df = pd.read_csv('Dataset.csv')
 
-print(df.head())
-print(df.columns)
-from collections import Counter
+# Display rating information
+print("Aggregate Rating Statistics")
+print(df['Aggregate rating'].describe())
 
-# Remove empty values and split cuisines
-cuisines = df['Cuisines'].dropna().str.split(', ')
+# Count ratings
+rating_count = df['Aggregate rating'].value_counts().sort_index()
 
-all_cuisines = []
+print("\nRating Counts")
+print(rating_count)
 
-# Combine all cuisines into one list
-for cuisine_list in cuisines:
-    all_cuisines.extend(cuisine_list)
+# Create histogram
+plt.hist(df['Aggregate rating'], bins=10)
 
-# Count each cuisine
-cuisine_count = Counter(all_cuisines)
+plt.title("Distribution of Aggregate Ratings")
+plt.xlabel("Ratings")
+plt.ylabel("Number of Restaurants")
 
-# Get top 3 cuisines
-top_3 = cuisine_count.most_common(3)
-
-print(top_3)
-total_restaurants = len(df)
-
-for cuisine, count in top_3:
-    percentage = (count / total_restaurants) * 100
-    print(cuisine, ":", round(percentage, 2), "%")
-names = [x[0] for x in top_3]
-counts = [x[1] for x in top_3]
-
-plt.bar(names, counts)
-
-plt.title("Top 3 Cuisines")
-plt.xlabel("Cuisine")
-plt.ylabel("Count")
-
-plt.savefig("top_cuisines.png")
+plt.savefig("rating_distribution.png")
 plt.show()

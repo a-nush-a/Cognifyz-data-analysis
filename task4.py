@@ -4,29 +4,23 @@ import matplotlib.pyplot as plt
 # Load dataset
 df = pd.read_csv('Dataset.csv')
 
-# Count online delivery options
-delivery_count = df['Has Online delivery'].value_counts()
+# Restaurants with highest ratings
+top_rated = df[['Restaurant Name', 'Aggregate rating', 'Votes']]
 
-print("Online Delivery Count")
-print(delivery_count)
+top_rated = top_rated.sort_values(
+    by=['Aggregate rating', 'Votes'],
+    ascending=False
+)
 
-# Calculate percentage
-delivery_percentage = (delivery_count / len(df)) * 100
+print("Top 10 Highest Rated Restaurants")
+print(top_rated.head(10))
 
-print("\nOnline Delivery Percentage")
-print(round(delivery_percentage, 2))
+# Scatter plot between votes and ratings
+plt.scatter(df['Votes'], df['Aggregate rating'])
 
-# Compare ratings
-rating_comparison = df.groupby('Has Online delivery')['Aggregate rating'].mean()
+plt.title("Votes vs Aggregate Rating")
+plt.xlabel("Votes")
+plt.ylabel("Aggregate Rating")
 
-print("\nAverage Ratings Comparison")
-print(round(rating_comparison, 2))
-
-# Create graph
-rating_comparison.plot(kind='bar')
-
-plt.title("Online Delivery vs Average Ratings")
-plt.ylabel("Average Rating")
-
-plt.savefig("online_delivery.png")
+plt.savefig("votes_vs_rating.png")
 plt.show()
